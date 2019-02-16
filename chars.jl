@@ -1,6 +1,9 @@
 import Base: codepoint, show
 
 using Base: InvalidCharError
+using Printf: @sprintf
+
+export code
 
 abstract type MorseGroup <: AbstractChar end
 function MorseGroup(code::MorseCode)
@@ -46,6 +49,8 @@ const CharPointDict = Dict{UInt32, MorseChar}()
 
 codepoint(mc::MorseChar) = mc.cp
 
+code(mc::MorseChar) = mc.code
+
 struct MorseSignal <: MorseGroup
 	code::MorseCode
 	name::String
@@ -80,6 +85,8 @@ end
 
 const SignalCodeDict = Dict{MorseCode, MorseSignal}()
 const SignalNameDict = Dict{String, MorseSignal}()
+
+code(ms::MorseSignal) = ms.code
 
 show(io::IO, ::MIME"text/plain", signal::MorseSignal) = write(io, @sprintf "MorseSignal(\"%s\")" signal.name)
 

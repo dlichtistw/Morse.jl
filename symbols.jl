@@ -59,7 +59,7 @@ end
 length(g::MorseGap) = g.length
 
 const MorseCode = Vector{<: MorseUnit}
-MorseCode(code::AbstractString; strict::Bool=false) = [MorseUnit(m.match) for m = eachmatch(strict ? r"(?<!^| )(?! |$)| +|[^ ]" : r" +|[^ ]", code)]
+MorseCode(code::AbstractString=""; strict::Bool=false) = MorseUnit[MorseUnit(m.match) for m = eachmatch(strict ? r"(?<!^| )(?! |$)| +|[^ ]" : r" +|[^ ]", code)]
 
 macro Morse(mark::AbstractChar)
     m = MorseUnit(mark)
