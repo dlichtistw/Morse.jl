@@ -2,6 +2,7 @@ import Base: codepoint, show
 
 using Base: InvalidCharError
 using Printf: @sprintf
+using Base.Iterators: repeated, flatten, take
 
 export code
 
@@ -14,6 +15,11 @@ end
 MorseGroup(cp::Integer) = MorseChar(cp)
 MorseGroup(char::AbstractChar) = MorseChar(char)
 MorseGroup(name::AbstractString) = MorseSignal(name)
+
+_interleave_sgap(code::MorseCode) = zip(code, repeated(sgap)) |> flatten |> x -> take(x, 2length(code) - 1) |> collect
+
+# code(group::MorseGroup) = group.code
+code(group::MorseGroup; strict::Bool=false) = strict ? _interleave_sgap(group.code) : group.code
 
 struct MorseChar <: MorseGroup
     code::MorseCode
@@ -49,7 +55,7 @@ const CharPointDict = Dict{UInt32, MorseChar}()
 
 codepoint(mc::MorseChar) = mc.cp
 
-code(mc::MorseChar) = mc.code
+# code(mc::MorseChar) = mc.code
 
 struct MorseSignal <: MorseGroup
 	code::MorseCode
@@ -86,7 +92,7 @@ end
 const SignalCodeDict = Dict{MorseCode, MorseSignal}()
 const SignalNameDict = Dict{String, MorseSignal}()
 
-code(ms::MorseSignal) = ms.code
+# code(ms::MorseSignal) = ms.code
 
 show(io::IO, ::MIME"text/plain", signal::MorseSignal) = write(io, @sprintf "MorseSignal(\"%s\")" signal.name)
 

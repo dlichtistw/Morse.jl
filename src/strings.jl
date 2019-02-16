@@ -10,12 +10,12 @@ export code
 struct MorseString <: AbstractString
     code::MorseCode
 end
-MorseString(string::AbstractString) = MorseString((MorseChar(c) for c = string))
-function MorseString(groups::Union{Generator{<: Any, Type{G}}, AbstractVector{G}}) where {G <: MorseGroup}
+MorseString(string::AbstractString; strict::Bool=false) = MorseString((MorseChar(c) for c = string), strict=strict)
+function MorseString(groups::Union{Generator{<: Any, Type{G}}, AbstractVector{G}}; strict::Bool=false) where {G <: MorseGroup}
     mc = MorseCode()
     for gr = groups
         gr != MorseChar(' ') && length(mc) > 0 && !(mc[end] isa MorseGap) && push!(mc, cgap)
-        append!(mc, code(gr))
+        append!(mc, code(gr, strict=strict))
     end
     return MorseString(mc)
 end

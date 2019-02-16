@@ -19,12 +19,12 @@ const dit = MorseMark(1)
 const dah = MorseMark(3)
 
 function MorseMark(mark::AbstractChar)
-    if mark == '.'
+    if mark == '.' || mark == '·'
         return dit
-    elseif mark == '-'
+    elseif mark == '-' || mark == '−'
         return dah
     end
-    throw(DomainError(@sprintf("'%s'", mark), "Valid MorseMark representations are '.' and '-'."))
+    error(@sprintf "Invalid Morse mark representation '%c'." mark)
 end
 
 length(m::MorseMark) = m.length
@@ -47,13 +47,13 @@ function MorseGap(gap::AbstractString)
             return wgap
         end
     end
-    throw(DomainError(@sprintf("\"%s\"", gap), "Valid MorseGap representations are 1, 2 or 3 spaces."))
+    error(@sprintf "Invalid Morse gap representation \"%s\"." gap)
 end
 function MorseGap(gap::AbstractChar)
     if gap == ' '
         return cgap
     end
-    throw(DomainError(@sprintf("'%s'", gap), "Only ' ' is a valid MorseGap representation."))
+    error(@sprintf "Invalid Morse gap representation '%c'." gap)
 end
 
 length(g::MorseGap) = g.length

@@ -1,0 +1,4 @@
+name = "Morse"
+uuid = "4f956af0-31fd-11e9-104c-49fe9c665fdc"
+authors = ["dlichtistw <dlichtistw@gmx.de>"]
+version = "0.1.0"
