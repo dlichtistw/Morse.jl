@@ -5,7 +5,7 @@ import Base: Generator
 
 using Printf: @sprintf
 
-export code
+export MorseString, code, @Morse_str
 
 struct MorseString <: AbstractString
     code::MorseCode
@@ -18,6 +18,11 @@ function MorseString(groups::Union{Generator{<: Any, Type{G}}, AbstractVector{G}
         append!(mc, code(gr, strict=strict))
     end
     return MorseString(mc)
+end
+
+macro Morse_str(code::String)
+    s = MorseString(MorseCode(code))
+    return :($s)
 end
 
 code(s::MorseString) = s.code

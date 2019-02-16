@@ -1,4 +1,4 @@
-import Base: display, length
+import Base: length
 
 using Printf: @sprintf
 

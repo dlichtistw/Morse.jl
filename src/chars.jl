@@ -1,10 +1,9 @@
 import Base: codepoint, show
 
-using Base: InvalidCharError
 using Printf: @sprintf
 using Base.Iterators: repeated, flatten, take
 
-export code
+export MorseGroup, code
 
 abstract type MorseGroup <: AbstractChar end
 function MorseGroup(code::MorseCode)
@@ -55,8 +54,6 @@ const CharPointDict = Dict{UInt32, MorseChar}()
 
 codepoint(mc::MorseChar) = mc.cp
 
-# code(mc::MorseChar) = mc.code
-
 struct MorseSignal <: MorseGroup
 	code::MorseCode
 	name::String
@@ -91,8 +88,6 @@ end
 
 const SignalCodeDict = Dict{MorseCode, MorseSignal}()
 const SignalNameDict = Dict{String, MorseSignal}()
-
-# code(ms::MorseSignal) = ms.code
 
 show(io::IO, ::MIME"text/plain", signal::MorseSignal) = write(io, @sprintf "MorseSignal(\"%s\")" signal.name)
 
@@ -158,9 +153,11 @@ show(io::IO, ::MIME"text/plain", signal::MorseSignal) = write(io, @sprintf "Mors
 @MorseChar "-..-" '*'
 @MorseChar ".--.-." '@'
 
-@MorseSignal  "...-." "VE" "Understood"
+@MorseSignal "...-." "VE" "Understood"
 @MorseSignal "........" "HH" "Error"
 @MorseSignal "-.-" "K" "Invitation to transmit"
-@MorseSignal ".-..." "AI" "Wait"
+@MorseSignal ".-..." "AS" "Wait"
 @MorseSignal "...-.-" "SK" "End of work"
 @MorseSignal "-.-.-" "KA" "Starting signal"
+@MorseSignal ".-.-." "AR" "End of transmission"
+@MorseSignal "-...-" "BT" "Separator"
