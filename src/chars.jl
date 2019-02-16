@@ -5,6 +5,13 @@ using Base.Iterators: repeated, flatten, take
 
 export MorseGroup, code
 
+"""
+Characters and other signals are encoded in groups of Morse marks.
+Since the marks are separated by the array structure, the short gaps are omitted in the encoding.
+
+As for the MorseUnits, users should not define any new groups, but rather use the predefined set of code groups.
+Should there be any group missing, use the macros @MorseChar and @MorseSignal to define them at compile time.
+"""
 abstract type MorseGroup <: AbstractChar end
 function MorseGroup(code::MorseCode)
 	haskey(CharCodeDict, code) && return CharCodeDict[code]
@@ -15,11 +22,22 @@ MorseGroup(cp::Integer) = MorseChar(cp)
 MorseGroup(char::AbstractChar) = MorseChar(char)
 MorseGroup(name::AbstractString) = MorseSignal(name)
 
+"""
+Insert short gaps between the units of the code.
+This is only useful, when the code does not contain any gaps.
+"""
 _interleave_sgap(code::MorseCode) = zip(code, repeated(sgap)) |> flatten |> x -> take(x, 2length(code) - 1) |> collect
 
-# code(group::MorseGroup) = group.code
+"""
+Return the Morse code representation of a group.
+With strict mode, the short gaps are added in.
+"""
 code(group::MorseGroup; strict::Bool=false) = strict ? _interleave_sgap(group.code) : group.code
 
+"""
+MorseChars are special groups that encode actual characters.
+They have a Morse code representation and a unicode code point.
+"""
 struct MorseChar <: MorseGroup
     code::MorseCode
     cp::UInt32
@@ -52,8 +70,14 @@ end
 const CharCodeDict = Dict{MorseCode, MorseChar}()
 const CharPointDict = Dict{UInt32, MorseChar}()
 
+"Return the codepoint of a MorseChar object."
 codepoint(mc::MorseChar) = mc.cp
 
+"""
+MorseSignals are groups that encode a prosign.
+They have no unicode representation, but a special meaning.
+Their code is the concatenation of the codes representing the characters in their respective name when leaving out the medium gap in between.
+"""
 struct MorseSignal <: MorseGroup
 	code::MorseCode
 	name::String
